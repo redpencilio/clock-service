@@ -14,25 +14,30 @@ app.post("/clock/update/:id", function(req, res) {
             timeZone: "Europe/Brussels",
             dateStyle: 'full',
             timeStyle: 'long',
-            weekday: 'long',
+            weekday: 'short',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         }),
     }), 'string')
+    let dateISOString = now.toISOString()
     let type = "http://clock"
     let q = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
     PREFIX mupush: <http://mu.semte.ch/vocabularies/push/>
+    PREFIX dc:  <http://purl.org/dc/terms/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     INSERT INTO <http://mu.semte.ch/application> {
         <http://semte.baert.jp.net/push-updates/v0.1/${uuidValue}>  mu:uuid ${sparqlEscape(uuidValue, 'string')};
                                                                     a mupush:PushUpdate;
                                                                     mupush:tabId ${sparqlEscape(id, 'string')};
                                                                     mupush:type <${type}>;
-                                                                    rdf:value ${value}.
+                                                                    rdf:value ${value};
+                                                                    dc:created ${sparqlEscape(dateISOString, 'string')}^^xsd:dateTime.
     }
     `
+    // dc:created "time string in iso formaat"^^xsd:dateTime
     query(q)
         .then(() => {
             console.log(`Added push update for ${id}`)
