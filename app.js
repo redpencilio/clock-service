@@ -21,7 +21,8 @@ app.post("/clock/update/:id", function(req, res) {
         }),
     }), 'string')
     let dateISOString = now.toISOString()
-    let type = "http://clock"
+    let type = "http://update"
+    let realm = "http://clock"
     let q = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
@@ -33,6 +34,7 @@ app.post("/clock/update/:id", function(req, res) {
             <http://semte.baert.jp.net/push-updates/v0.1/${uuidValue}>  a mupush:PushUpdate;
                                                                         mu:uuid ${sparqlEscape(uuidValue, 'string')};
                                                                         mupush:tabId ${sparqlEscape(id, 'string')};
+                                                                        mupush:realm <${realm}>;
                                                                         mupush:type <${type}>;
                                                                         rdf:value ${value};
                                                                         dc:created ${sparqlEscape(dateISOString, 'string')}^^xsd:dateTime.
