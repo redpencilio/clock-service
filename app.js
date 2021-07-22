@@ -5,7 +5,9 @@ import {
     sparqlEscape
 } from "mu";
 
+// Generate a clock update for a certain tab
 app.post("/clock/update/:id", function(req, res) {
+    // The receiving tab
     let id = req.params.id;
     let uuidValue = uuid();
     let now = new Date();
@@ -21,8 +23,10 @@ app.post("/clock/update/:id", function(req, res) {
         }),
     }), 'string')
     let dateISOString = now.toISOString()
+    // Set the type and realm
     let type = "http://update"
     let realm = "http://clock"
+    // Insert the data
     let q = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
